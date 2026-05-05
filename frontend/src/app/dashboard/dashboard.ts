@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef, inject, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { SimulatorService } from '../service/simulator';
 import { AuthService } from '../service/auth';
 import { CommonModule } from '@angular/common';
@@ -11,7 +11,7 @@ import Chart from 'chart.js/auto';
   standalone: true,
   templateUrl: './dashboard.html',
   styleUrls: ['./dashboard.css'],
-  imports: [CommonModule, FormsModule]
+  imports: [CommonModule, FormsModule, RouterModule]
 })
 export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('waterChart') chartCanvas!: ElementRef;
@@ -26,7 +26,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   // Per-pipe state: each pipe tracks its own data and polling
   private pipeData   = new Map<any, any>();    // latest reading per pipe
   private pipePolls  = new Map<any, any>();    // setInterval handle per pipe
-  private pipeCharts = new Map<any, { labels: string[], ph: number[], turbidity: number[] }>();
+  private pipeCharts = new Map<any, { labels: string[], ph: number[], turbidity: number[], tds: number[] }>();
 
   private cdr    = inject(ChangeDetectorRef);
   private router = inject(Router);
@@ -180,7 +180,8 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.pipeCharts.set(pipeId, {
       labels:    [...this.chart.data.labels],
       ph:        [...this.chart.data.datasets[0].data],
-      turbidity: [...this.chart.data.datasets[1].data]
+      turbidity: [...this.chart.data.datasets[1].data],
+      tds:       [...this.chart.data.datasets[2].data]
     });
   }
 
@@ -190,6 +191,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.chart.data.labels            = [...cache.labels];
     this.chart.data.datasets[0].data  = [...cache.ph];
     this.chart.data.datasets[1].data  = [...cache.turbidity];
+    this.chart.data.datasets[2].data  = [...cache.tds];
     this.chart.update('none');
   }
 
@@ -209,6 +211,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     labels.push(time);
     this.chart.data.datasets[0].data.push(data.ph);
     this.chart.data.datasets[1].data.push(data.turbidity);
+    this.chart.data.datasets[2].data.push(data.tds);
 
     if (labels.length > 15) {
       labels.shift();
@@ -224,8 +227,9 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       data: {
         labels: [],
         datasets: [
-          { label: 'pH Level',   data: [], borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.08)', tension: 0.4, fill: true, pointRadius: 3 },
-          { label: 'Turbidity', data: [], borderColor: '#06b6d4', backgroundColor: 'rgba(6,182,212,0.08)',  tension: 0.4, fill: true, pointRadius: 3 }
+          { label: 'pH Level',   data: [], borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.08)', tension: 0.4, fill: true, pointRadius: 3, yAxisID: 'yLeft' },
+          { label: 'Turbidity',  data: [], borderColor: '#06b6d4', backgroundColor: 'rgba(6,182,212,0.08)',  tension: 0.4, fill: true, pointRadius: 3, yAxisID: 'yLeft' },
+          { label: 'TDS (mg/L)', data: [], borderColor: '#8b5cf6', backgroundColor: 'rgba(139,92,246,0.08)', tension: 0.4, fill: true, pointRadius: 3, yAxisID: 'yRight' }
         ]
       },
       options: {
@@ -234,7 +238,23 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         plugins: { legend: { labels: { font: { family: 'Poppins', size: 12 } } } },
         scales: {
           x: { ticks: { font: { family: 'Poppins', size: 11 } } },
-          y: { ticks: { font: { family: 'Poppins', size: 11 } } }
+          yLeft: {
+            type: 'linear',
+            position: 'left',
+            min: 0,
+            max: 14,
+            ticks: { font: { family: 'Poppins', size: 11 } },
+            title: { display: true, text: 'pH / Turbidity', font: { family: 'Poppins', size: 11 }, color: '#64748b' }
+          },
+          yRight: {
+            type: 'linear',
+            position: 'right',
+            min: 0,
+            max: 700,
+            ticks: { font: { family: 'Poppins', size: 11 } },
+            title: { display: true, text: 'TDS (mg/L)', font: { family: 'Poppins', size: 11 }, color: '#8b5cf6' },
+            grid: { drawOnChartArea: false }
+          }
         }
       }
     });
@@ -255,6 +275,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
           );
           this.chart.data.datasets[0].data = recent.map((d: any) => d.ph);
           this.chart.data.datasets[1].data = recent.map((d: any) => d.turbidity);
+          this.chart.data.datasets[2].data = recent.map((d: any) => d.tds);
           this.chart.update('none');
         }
       }

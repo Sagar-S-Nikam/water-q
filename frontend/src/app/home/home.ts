@@ -65,6 +65,10 @@ export class Home implements OnInit, OnDestroy {
     });
   }
 
+  scrollToFeatures() {
+    document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
+  }
+
   ngOnDestroy() {
     if (this.timerInterval) clearInterval(this.timerInterval);
   }

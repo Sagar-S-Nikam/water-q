@@ -28,7 +28,7 @@
       <p>Monitor pH, turbidity, and TDS across all your water lines in real time. Instant SAFE / DANGER classification against WHO standards.</p>
       <div class="hero-cta">
         <a routerLink="/dashboard" class="cta-primary">Open Dashboard →</a>
-        <a href="#features" class="cta-outline">Learn More</a>
+        <button class="cta-outline" (click)="scrollToFeatures()">Learn More</button>
       </div>
     </div>
     <div class="hero-visual">
@@ -41,13 +41,78 @@
     </div>
   </section>
 
-  <!-- FEATURES -->
-  
+  <!-- FEATURES / LEARN MORE -->
+  <section class="features" id="features">
 
-  
+    <!-- Parameter definitions -->
+    <div class="section-head">
+      <h2>Water Quality Parameters</h2>
+      <p>Three key parameters measured against WHO (World Health Organization) drinking water standards.</p>
+    </div>
+
+    <div class="features-grid">
+      <div class="feat-card">
+        <div class="feat-icon blue-icon">⚗️</div>
+        <h3>pH Level</h3>
+        <p>
+          <strong>pH</strong> stands for <em>Potential of Hydrogen</em>. It measures how acidic or alkaline the water is on a scale of 0 to 14.
+          <br/><br/>
+          A pH below 7 means the water is <strong>acidic</strong> — it can corrode pipes and taste sour.
+          A pH above 7 means it is <strong>alkaline</strong> — it can cause scale build-up.
+          Neutral (pH 7) is pure water.
+        </p>
+        <span class="range-tag">✅ Safe Range: 6.5 – 8.5</span>
+      </div>
+
+      <div class="feat-card">
+        <div class="feat-icon cyan-icon">🌫️</div>
+        <h3>Turbidity</h3>
+        <p>
+          <strong>Turbidity</strong> measures the <em>cloudiness or haziness</em> of water caused by suspended particles like dirt, bacteria, algae, or silt.
+          <br/><br/>
+          High turbidity means the water looks muddy or milky. It can indicate the presence of harmful microorganisms and makes water unsafe to drink.
+          Measured in NTU (Nephelometric Turbidity Units).
+        </p>
+        <span class="range-tag">✅ Safe Range: ≤ 5.0 NTU</span>
+      </div>
+
+      <div class="feat-card">
+        <div class="feat-icon purple-icon">🧂</div>
+        <h3>TDS (Total Dissolved Solids)</h3>
+        <p>
+          <strong>TDS</strong> measures the total amount of <em>dissolved minerals, salts, metals, and other substances</em> in water, such as calcium, magnesium, sodium, and chloride.
+          <br/><br/>
+          Very high TDS makes water taste salty or bitter and may contain harmful heavy metals. Very low TDS can also be undesirable as it lacks essential minerals.
+          Measured in mg/L (milligrams per litre).
+        </p>
+        <span class="range-tag">✅ Safe Range: ≤ 500 mg/L</span>
+      </div>
+    </div>
+
+    <!-- Status explanation -->
+    <div style="margin-top: 2.5rem; background: #f0f9ff; border-radius: 16px; padding: 2rem 2.5rem; box-shadow: 0 2px 16px rgba(0,0,0,0.07); border: 1px solid #e2e8f0; max-width: 700px; margin-left: auto; margin-right: auto;">
+      <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; color: #0f172a;">How Status is Determined</h3>
+      <p style="color: #64748b; font-size: 0.95rem; line-height: 1.7; margin-bottom: 1rem;">
+        The system checks <strong>all three parameters</strong> together for every reading:
+      </p>
+      <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+        <div style="flex: 1; background: #f0fdf4; border: 1px solid #86efac; border-radius: 10px; padding: 1rem;">
+          <span style="font-size: 1.5rem;">✅</span>
+          <p style="color: #166534; font-weight: 700; margin: 4px 0;">SAFE</p>
+          <p style="color: #15803d; font-size: 0.85rem; margin: 0;">All 3 parameters are within safe range. Water is safe to use.</p>
+        </div>
+        <div style="flex: 1; background: #fef2f2; border: 1px solid #fca5a5; border-radius: 10px; padding: 1rem;">
+          <span style="font-size: 1.5rem;">⚠️</span>
+          <p style="color: #991b1b; font-weight: 700; margin: 4px 0;">DANGER</p>
+          <p style="color: #dc2626; font-size: 0.85rem; margin: 0;">Even ONE parameter is out of range. Water quality alert triggered.</p>
+        </div>
+      </div>
+    </div>
+
+  </section>
 
   <footer class="site-footer">
-    <p>© 2026 AquaSense &nbsp;·&nbsp; Built with Spring Boot &amp; Angular &nbsp;·&nbsp; Cognizant</p>
+    <p>© 2026 AquaSense  </p>
   </footer>
 
 </div>
